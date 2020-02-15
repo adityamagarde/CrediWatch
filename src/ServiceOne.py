@@ -4,7 +4,7 @@ from flask_restplus import Api, Resource, fields
 
 
 pathDict = {
-    'jsonFilePath' : r''
+    'jsonFilePath': r'../data/dataJson.json'
 }
 
 
@@ -14,8 +14,8 @@ app = Api(app=flaskApp, version="1.0", title="DataFetcher",
 
 nameSpace = app.namespace('CustomerDetails')
 
-
-listOfCustomers = dict()
+with open(pathDict['jsonFilePath'], 'r') as myFile:
+    listOfCustomers = json.load(myFile)
 
 model = app.model('Data Model', {'COMPANY NAME': fields.String(required=True, description='Name of the company', help="Company name cannot be blank."),
                                  'DATE OF REGISTRATION': fields.String(required=True, description="Date of registration of company", help="Date in the format yyyy-mm-dd"),
@@ -43,7 +43,8 @@ class MainClass(Resource):
             return {
                 "status": "Information retrieved",
                 "company name": information["COMPANY NAME"],
-                "date": information["DATE OF REGISTRATION"]
+                "date": information["DATE OF REGISTRATION"],
+                "state": information["STATE"]
             }
         except KeyError as e:
             nameSpace.abort(
