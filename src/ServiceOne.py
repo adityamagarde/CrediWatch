@@ -1,7 +1,7 @@
 import json
+
 from flask import Flask, request
 from flask_restplus import Api, Resource, fields
-
 
 pathDict = {
     'jsonFilePath': r'../data/dataJson.json'
@@ -12,10 +12,11 @@ flaskApp = Flask(__name__)
 app = Api(app=flaskApp, version="1.0", title="DataFetcher",
           description="Fetch and display data as per the CIN")
 
-nameSpace = app.namespace('CustomerDetails')
+nameSpace = app.namespace('CustomerDetails', description="Random Des.")
 
 with open(pathDict['jsonFilePath'], 'r') as myFile:
-    listOfCustomers = json.load(myFile)
+    listOfCustomers = json.loads(json.load(myFile))
+
 
 model = app.model('Data Model', {'COMPANY NAME': fields.String(required=True, description='Name of the company', help="Company name cannot be blank."),
                                  'DATE OF REGISTRATION': fields.String(required=True, description="Date of registration of company", help="Date in the format yyyy-mm-dd"),
