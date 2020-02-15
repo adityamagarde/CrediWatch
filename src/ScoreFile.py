@@ -1,6 +1,9 @@
 import pandas as pd
 
 
+# TODO - Remove code from main and convert it into a function
+
+
 pathDict = {
     'originalCsv' : r'../data/data_set.csv',
     'finalCsv' : r'../data/final_data_with_scores.csv'
@@ -24,6 +27,7 @@ def score_calculator(row):
 
 
 if __name__ == '__main__':
+
     dataframe = pd.read_csv(pathDict['originalCsv'])
 
     scoreList = list()
