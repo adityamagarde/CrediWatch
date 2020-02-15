@@ -1,5 +1,7 @@
 import json
+import fast_json
 
+from random import randint
 from flask import Flask, request
 from flask_restplus import Api, Resource, fields
 
@@ -7,6 +9,7 @@ pathDict = {
     'jsonFilePath': r'../data/dataJson.json'
 }
 
+OTP_global = dict()
 
 flaskApp = Flask(__name__)
 app = Api(app=flaskApp, version="1.0", title="DataFetcher",
@@ -41,15 +44,42 @@ class MainClass(Resource):
     def get(self, cin):
         try:
             information = listOfCustomers[cin]
-            return {
+            a = fast_json.dumps({
                 "status": "Information retrieved",
                 "company name": information["COMPANY NAME"],
                 "date": information["DATE OF REGISTRATION"],
                 "state": information["STATE"]
-            }
+            })
+
+            # return {
+            #     "status": "Information retrieved",
+            #     "company name": information["COMPANY NAME"],
+            #     "date": information["DATE OF REGISTRATION"],
+            #     "state": information["STATE"]
+            # }
+            return a
         except KeyError as e:
             nameSpace.abort(
                 500, e.__doc__, status="Could not retrieve information", statusCode="500")
         except Exception as e:
             nameSpace.abort(
                 400, e.__doc__, status="Could not retrieve information", statusCode="400")
+
+
+def otp_generator():
+    '''
+        A function that uses the random function in python to generate OTP
+
+        Parameters:
+            None
+        Returns:
+            OTP - The randomly generated OTP
+    '''
+    OTP = randint(10000, 99999)
+    return OTP
+
+
+@flaskApp.route('/otp/<mob>')
+def A(mob):
+    # TODO - Add abhinav's function
+    otp = otp_generator()
