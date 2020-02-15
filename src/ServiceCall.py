@@ -33,5 +33,13 @@ def calculateTotalOtherScore(individualScore):
 		sum += value
 	return sum
 
+def dataValidation(serverData,formDictionary):
+	if serverData['COMPANY NAME'] == formDictionary['COMPANY NAME'] and serverData['STATE'] == formDictionary['STATE']:
+		return True
+	else:
+		return False
+
+
 if __name__ == "__main__":	
 	print(calculateTotalOtherScore(calculateIndividualOtherScore("Room 1116, Homi Bhabha Block, Tata Memorial Hospital, Dr.Borges Road, Parel MUMBAI Mumbai City-400012 Maharashtra","U85100MH2020NPL335745","HEMATOLOGY CANCER CONSORTIUM - ASSOCIATION","Maharashtra","Community, personal & Social Services")))
+
