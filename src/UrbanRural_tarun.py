@@ -4,7 +4,7 @@ import json
 import pandas as pd
 
 def findCityTier(adress):
-    with open('cities.json') as f:
+    with open('../data/cities.json') as f:
       json_data = json.load(f)
     
     tier1 = []
@@ -19,11 +19,11 @@ def findCityTier(adress):
     
     nomi = pgeocode.Nominatim('in')
     zip_pattern = '(\d{6})'  
-    print(re.search(zip_pattern,adress))
+    #print(re.search(zip_pattern,adress))
     zip_code = re.search(zip_pattern,adress).group(1)
     city_detail = nomi.query_postal_code(zip_code)                      #Taking adress details from pincodde
     city_name = str(city_detail.county_name).lower()
-    print(city_name)
+    #print(city_name)
     for city in tier1:
         if((city in city_name) or (city_name in city)):
             return 1

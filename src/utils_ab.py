@@ -24,18 +24,19 @@ def companyValidation(actualCin,actualCompanyName):
     
     companyName=re.search(companyRegex,str(findCompanyName)).group(1)
     cin=re.search(cinRegex,str(findCin)).group(1)
-    print("Company Name:",companyName,"CIN:",cin)
+    #print("Company Name:",companyName,"CIN:",cin)
     
     resultCin=cin in actualCin
-    print("The entered CIN number is",resultCin)
+    #print("The entered CIN number is",resultCin)
     
     sum=0
     
     if resultCin:
         sum=8
-        
+    else:
+        return sum
     resultCompanyName=companyName.strip() == actualCompanyName.strip()
-    print("The entered Company Name is",resultCompanyName)
+    #print("The entered Company Name is",resultCompanyName)
     
     if resultCompanyName:
         sum=sum+2
@@ -57,7 +58,7 @@ def authentication(otp,mobileNo):
     url= baseurl+'&sender='+sender+'&to='+mobileNo+'&message='+message+'&format=json'
     response = requests.get(url)
     
-    print('Response:', response, 'request.')
+    #print('Response:', response, 'request.')
 
 
 if __name__ == '__main__':
