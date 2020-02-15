@@ -19,7 +19,7 @@ class Analysis:
         soup = BeautifulSoup(response.text, 'html.parser')
         # getting the tag with all the headlines
         headline_results = soup.find_all('div', class_='BNeawe')
-        print(headline_results)
+        #print(headline_results)
         for h in headline_results:
             blob = TextBlob(h.get_text())
             self.sentiment += blob.sentiment.polarity/len(headline_results)
@@ -30,5 +30,5 @@ class Analysis:
 def newsAnalysor(queryName):
     a = Analysis(queryName)
     a.run()
-    newsAnalysis = {"sentiment": a.sentiment, "subjectivity": a.subjectivity}
+    newsAnalysis = a.sentiment*a.subjectivity*10
     return newsAnalysis
