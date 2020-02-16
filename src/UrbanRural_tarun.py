@@ -4,7 +4,7 @@ import json
 import pandas as pd
 
 def findCityTier(adress):
-    with open('../data/cities.json') as f:
+    with open(r'/home/aditya/Documents/Files/Hackathons/CrediWatch/data/cities.json') as f:
       json_data = json.load(f)
     
     tier1 = []

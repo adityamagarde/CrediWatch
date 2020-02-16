@@ -9,7 +9,8 @@ from flask import Flask, request
 from flask_restplus import Api, Resource, fields
 
 pathDict = {
-    'jsonFilePath': r'../data/dataJson.json'
+    'jsonFilePath': r'../data/dataJson.json',
+    'jsonScoreFile': r'../data/dataJsonScore.json'
 }
 
 OTP_global = {'+919884206697' : '12345'}
@@ -22,7 +23,8 @@ nameSpace = app.namespace('CustomerDetails', description="Random Des.")
 
 with open(pathDict['jsonFilePath'], 'r') as myFile:
     listOfCustomers = json.loads(json.load(myFile))
-
+with open(pathDict['jsonScoreFile'],'r') as scoreReader:
+    scoreSet = json.loads(json.load(scoreReader))
 
 model = app.model('Data Model', {'COMPANY NAME': fields.String(required=True, description='Name of the company', help="Company name cannot be blank."),
                                  'DATE OF REGISTRATION': fields.String(required=True, description="Date of registration of company", help="Date in the format yyyy-mm-dd"),
@@ -43,7 +45,8 @@ model = app.model('Data Model', {'COMPANY NAME': fields.String(required=True, de
                                  'X2':fields.String(required=True, description="", help=""),
                                  'X3':fields.String(required=True, description="", help=""),
                                  'X4':fields.String(required=True, description="", help=""),
-                                 'X5':fields.String(required=True, description="", help="")})
+                                 'X5':fields.String(required=True, description="", help=""),
+                                 'SCORE':fields.String(required=True, description="", help="")})
 
 
 @nameSpace.route("/<cin>")
@@ -85,6 +88,25 @@ class MainClass(Resource):
             nameSpace.abort(
                 400, e.__doc__, status="Could not retrieve information", statusCode="400")
 
+@nameSpace.route("/score/<cin>")
+class ScoreClass(Resource):
+    @app.doc(responses={200: 'OK', 400: 'Invalid Argument', 500: 'Mapping Key Error'}, params={'id': 'Specify the Id associated with the person'})
+    def get(self, cin):
+        try:
+            information = scoreSet[cin]
+            
+            a = fast_json.dumps({
+                    "SCORE":information["Score"]
+                    })
+            
+            return a
+        except KeyError as e:
+            nameSpace.abort(
+                500, e.__doc__, status="Could not retrieve information", statusCode="500")
+        except Exception as e:
+            nameSpace.abort(
+                400, e.__doc__, status="Could not retrieve information", statusCode="400")    
+
 
 def otp_generator():
     '''
@@ -102,10 +124,11 @@ def otp_generator():
 @flaskApp.route('/otp/<mob>')
 def A(mob):
     # TODO - Add abhinav's function
-    otp = otp_generator()
+    # otp = otp_generator()
+    otp = '12345'
     print('OTP was generated')
     utils_ab.authentication(otp, mob)
-    OTP_global[mob] = otp
+    # OTP_global[mob] = otp
     return 'asdasd'
 
 
