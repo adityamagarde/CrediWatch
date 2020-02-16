@@ -1,18 +1,20 @@
 import sys
+import fast_json
+import requests
+import urllib
 
 sys.path.append("..")
 import utils_ab
+import ServiceCall
 
-import requests
-import fast_json
 from flask import Flask, render_template, request, redirect
-from ServiceCall import 
+
+
 
 
 app = Flask(__name__)
 
-# TODO - Center the button if possible in user form
-# TODO - Change the background if possible
+formDictionary = {}
 
 
 def fetch_data(cin="U93000GJ2020NPL111833"):
@@ -22,9 +24,8 @@ def fetch_data(cin="U93000GJ2020NPL111833"):
     return fast_json.loads(response.json())
 
 
-@app.route('/testOTP')
-def test_function_OTP():
-    url = "http://127.0.0.1:5000/otp/9884202442"
+def test_function_OTP(number):
+    url = "http://127.0.0.1:5000/otp/" + number
     return redirect(url)
 
 
@@ -50,7 +51,6 @@ def user_form():
 
 @app.route("/process", methods=["GET", "POST"])
 def get_data():
-    formDictionary = {}
     if request.method == "POST":
         formDictionary['CIN'] = request.form['cin']
         formDictionary['COMPANY NAME'] = request.form['company']
@@ -66,29 +66,38 @@ def get_data():
         formDictionary['ACTIVITY CODE'] = request.form['code']
         formDictionary['ACTIVITY DESCRIPTION'] = request.form['desc']
         formDictionary['REGISTERED OFFICE ADDRESS'] = request.form['address']
-        formDictionary['EMAIL'] = request.form['email']
+        formDictionary['PHONE'] = request.form['phone']
 
         month = formDictionary['DATE OF REGISTRATION'][5:7]
-        print(formDictionary['DATE OF REGISTRATION'])
-        print(formDictionary['DATE OF REGISTRATION'][5:7])
         month_dictionary = {'01': 'January', '02': 'February', '03': 'March', '04': 'April', '05': 'May', '06': 'June',
                             '07': 'July', '08': 'August', '09': 'September', '10': 'October', '11': 'November', '12': 'December'}
         formDictionary['MONTH NAME'] = month_dictionary[month]
 
-    # Call function for company validation
     if utils_ab.companyValidation(formDictionary["CIN"], formDictionary["COMPANY NAME"]):
-        
-        # TODO - FETCH Data
         serverData = fetch_data(formDictionary["CIN"])
-        # TODO - Validation
-        if dataValidation(serverData,formDictionary):
-        # IF VALIDATED: render the OTP html page and call OTP function
         
-
+        if ServiceCall.dataValidation(serverData, formDictionary):
+            urllib.request.urlopen('http://127.0.0.1:5000/otp/' + formDictionary["PHONE"])
+            return render_template('otpVerify_tarun.html', name="otpwalacode")
+        else:
+            return render_template('validationFail.html', name="not authenticated")
     else:
-        render_template('notauthentic.html')
+        return render_template('validationFail.html', name="not authenticated")
 
 
+@app.route('/otpProcess', methods=["GET", "POST"])
+def validate_otp():
+    if request.method == "POST":
+        formDictionary["OTP"] = request.form('otp')
+    
+    validation = urllib.request.urlopen("http://127.0.0.1:5000/otpValidate/"+formDictionary["PHONE"] + '/' + formDictionary["OTP"])
+
+    if validation == 'True':
+        #TODO - Get scores
+        pass
+    else:
+        #TODO - Fail HTML
+        pass
 
 if __name__ == '__main__':
     app.run(debug=True, port=8080)

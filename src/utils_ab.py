@@ -22,8 +22,14 @@ def companyValidation(actualCin,actualCompanyName):
     companyRegex='>\s+([^<]+)<'
     cinRegex='CIN:\s+([^<]+)<'
     
-    companyName=re.search(companyRegex,str(findCompanyName)).group(1)
-    cin=re.search(cinRegex,str(findCin)).group(1)
+    try:
+        companyName=re.search(companyRegex,str(findCompanyName)).group(1)
+        cin=re.search(cinRegex,str(findCin)).group(1)
+    except Exception as e:
+        print(e)
+        cin = ""
+        companyName = ""
+        return 0
     #print("Company Name:",companyName,"CIN:",cin)
     
     resultCin=cin in actualCin
@@ -52,7 +58,7 @@ def authentication(otp,mobileNo):
     '''
     sender = 'SEDEMO'
     apikey = '632s328863w07io97z6794u48cd1i031'
-    message= 'Hi+the+otp+is'+otp
+    message= 'Hi+the+otp+is'+str(otp)
     baseurl = 'http://web.springedge.com/api/web/send/?apikey='+apikey
     
     url= baseurl+'&sender='+sender+'&to='+mobileNo+'&message='+message+'&format=json'

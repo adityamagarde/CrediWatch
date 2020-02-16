@@ -1,5 +1,8 @@
+import sys
 import json
 import fast_json
+sys.path.append('.')
+import utils_ab
 
 from random import randint
 from flask import Flask, request
@@ -32,10 +35,15 @@ model = app.model('Data Model', {'COMPANY NAME': fields.String(required=True, de
                                  'COMPANY TYPE': fields.String(required=True, description="The company type represents if the company is a Government or Non-Government company", help=""),
                                  'AUTHORIZED CAPITAL': fields.String(required=True, description="The authorized capital of the company", help=""),
                                  'PAIDUP CAPITAL': fields.String(required=True, description="", help=""),
-                                 'ACTIVITY MODE': fields.String(required=True, description="", help=""),
+                                 'ACTIVITY CODE': fields.String(required=True, description="", help=""),
                                  'ACTIVITY DESCRIPTION': fields.String(required=True, description="", help=""),
                                  'REGISTERED OFFICE ADDRESS': fields.String(required=True, description="", help=""),
-                                 'EMAIL': fields.String(required=True, description="", help="")})
+                                 'EMAIL': fields.String(required=True, description="", help=""),
+                                 'X1':fields.String(required=True, description="", help=""),
+                                 'X2':fields.String(required=True, description="", help=""),
+                                 'X3':fields.String(required=True, description="", help=""),
+                                 'X4':fields.String(required=True, description="", help=""),
+                                 'X5':fields.String(required=True, description="", help="")})
 
 
 @nameSpace.route("/<cin>")
@@ -46,9 +54,21 @@ class MainClass(Resource):
             information = listOfCustomers[cin]
             a = fast_json.dumps({
                 "status": "Information retrieved",
-                "company name": information["COMPANY NAME"],
-                "date": information["DATE OF REGISTRATION"],
-                "state": information["STATE"]
+                "COMPANY NAME": information["COMPANY NAME"],
+                'DATE OF REGISTRATION': information['DATE OF REGISTRATION'],
+                "MONTH NAME": information["MONTH NAME"],
+                "STATE": information["STATE"],
+                'ROC':information['ROC'],
+                'COMPANY STATUS': information['COMPANY STATUS'],
+                'CATEGORY': information['CATEGORY'],
+                'CLASS': information['CLASS'],
+                'COMPANY TYPE': information['COMPANY TYPE'],
+                'AUTHORIZED CAPITAL': information['AUTHORIZED CAPITAL'],
+                'PAIDUP CAPITAL': information['PAIDUP CAPITAL'],
+                'ACTIVITY CODE': information['ACTIVITY CODE'],
+                'ACTIVITY DESCRIPTION': information['ACTIVITY DESCRIPTION'],
+                'REGISTERED OFFICE ADDRESS': information['REGISTERED OFFICE ADDRESS'],
+                'EMAIL': information['EMAIL']
             })
 
             # return {
@@ -83,3 +103,18 @@ def otp_generator():
 def A(mob):
     # TODO - Add abhinav's function
     otp = otp_generator()
+    print('OTP was generated')
+    utils_ab.authentication(otp, mob)
+    OTP_global[mob] = otp
+    return 'asdasd'
+
+
+@flaskApp.route('/otpValidate/<mob>/<otp>')
+def B(mob, otp):
+    try:
+        if otp == OTP_global[mob]:
+            return 'True'
+        else:
+            return 'False'
+    except KeyError as e:
+        return 'False'
