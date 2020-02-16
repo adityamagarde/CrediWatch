@@ -12,7 +12,7 @@ pathDict = {
     'jsonFilePath': r'../data/dataJson.json'
 }
 
-OTP_global = dict()
+OTP_global = {'+919884206697' : '12345'}
 
 flaskApp = Flask(__name__)
 app = Api(app=flaskApp, version="1.0", title="DataFetcher",
