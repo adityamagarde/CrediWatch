@@ -17,6 +17,12 @@ app = Flask(__name__)
 formDictionary = {}
 
 
+def fetchScore(cin="U93000GJ2020NPL111833"):
+    url = "http://127.0.0.1:5000/CustomerDetails/score"+cin
+    response = requests.get(url)
+
+    return fast_json.loads(response.json())
+
 def fetch_data(cin="U93000GJ2020NPL111833"):
     url = "http://127.0.0.1:5000/CustomerDetails/" + cin
     response = requests.get(url)
@@ -94,7 +100,9 @@ def validate_otp():
 
     if validation == 'True':
         #TODO - Get scores
-        pass
+        score1 = fetchScore(formDictionary['CIN'])
+        score2 = ServiceCall.calculateTotalOtherScore(ServiceCall.calculateIndividualOtherScore(formDictionary['REGISTERED OFFICE ADDRESS'],formDictionary['CIN'],formDictionary['COMPANY NAME'],formDictionary['STATE'],formDictionary['ACTIVITY DESCRIPTION']))
+        print(score1,score2)
     else:
         #TODO - Fail HTML
         pass
